@@ -1,0 +1,79 @@
+<include file="Public:header" />
+
+<include file="Public:menu" />
+
+
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="/admin" class="maincolor">首页</a>
+        <span class="c-999 en">&gt;</span>
+        <span class="c-666">我的桌面</span>
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <p class="f-20 text-success">欢迎使用十年之约签约博客专属审核系统~</p>
+            <p>登录次数：{$data.land_num} </p>
+            <p>上次登录IP：{$data.last_ip}  上次登录时间：{$data.last_date|date="Y-m-d H:i:s",###}</p>
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr>
+                    <th colspan="7" scope="col">信息统计</th>
+                </tr>
+                <tr class="text-c">
+                    <th>统计</th>
+                    <th>申请数量</th>
+                    <th>已通过数量</th>
+                    <th>未通过数量</th>
+                    <th>待审核数量</th>
+                    <th>管理员数量</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-c">
+                    <td>总数</td>
+                    <td>{$blognums}</td>
+                    <td>{$blogsuccess}</td>
+                    <td>{$blogerror}</td>
+                    <td>{$bloging}</td>
+                    <td>{$adminnums}</td>
+                </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-border table-bordered table-bg mt-20">
+                <thead>
+                <tr>
+                    <th colspan="2" scope="col">服务器信息</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th width="30%">服务器系统</th>
+                    <td><span id="lbServerName"><?php echo php_uname('s')?></span></span></td>
+                </tr>
+                <tr>
+                    <td>服务器IP地址</td>
+                    <td><?php echo $_SERVER['SERVER_ADDR']; ?></td>
+                </tr>
+                <tr>
+                    <td>服务器域名</td>
+                    <td><?php echo $_SERVER['SERVER_NAME']; ?></td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+        <footer class="footer">
+            <p>Copyright &copy;2018 十年之约 All Rights Reserved.<br> 本后台系统由<a href="https://qq52o.me/" target="_blank" title="沈唁志"> 沈唁志 </a>提供技术支持</p>
+        </footer>
+    </div>
+</section>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui.admin/js/H-ui.admin.page.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
