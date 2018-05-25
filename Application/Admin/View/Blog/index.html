@@ -33,7 +33,7 @@
                         <td>{$vo.blog_name}</td>
                         <td><a href="{$vo.blog_url}" target="_blank" >{$vo.blog_url}</a></td>
                         <td>{$vo.blog_email}</td>
-                        <td><img src="{$vo.blog_imgurl}" alt="{$vo.blog_name}"></td>
+                        <td>{$vo.blog_imgurl}</td>
                         <td class="text-l">{$vo.send_word}</td>
                         <td class="text-l">{$vo.memorabilia}</td>
                         <td>{$vo.create_at|date="Y-m-d H:i:s",###}</td>
@@ -58,8 +58,8 @@
                                         <else /><a style="text-decoration:none"  href="{:U('send','id='.$vo['id'])}" title="发送邮件"><i class="Hui-iconfont">&#xe6a7;</i>发送邮件</a>
                                     </if>
                                 <else />
-                                <a style="text-decoration:none"  href="{:U('adopt','id='.$vo['id'])}" title="通过审核"><i class="Hui-iconfont">&#xe6a7;</i>通过审核</a>&nbsp;
-                                <a style="text-decoration:none"  href="{:U('refuse','id='.$vo['id'])}" title="拒绝审核"><i class="Hui-iconfont">&#xe6a6;</i>拒绝审核</a>
+                                <a style="text-decoration:none"  href="{:U('adopt','id='.$vo['id'])}" title="通过申请"><i class="Hui-iconfont">&#xe6a7;</i>通过申请</a>&nbsp;
+                                <a style="text-decoration:none"  href="{:U('refuse','id='.$vo['id'])}" title="拒绝申请"><i class="Hui-iconfont">&#xe6a6;</i>拒绝申请</a>
                             </if>
                         </td>
                     </tr>
