@@ -18,7 +18,7 @@ function sendMail($to, $subject, $content)
     $mail->From = C('MAIL_USERNAME');//发件人是谁
     $mail->AddAddress($to);
     $mail->FromName = '十年之约项目组';
-    $mail->AddAttachment('./Public/test.png','十年公约.png'); // 添加附件,并指定名称
+    $mail->AddAttachment('./Public/10years.pdf','十年公约（2018年5月24日第二次修订）.pdf'); // 添加附件,并指定名称
     $mail->IsHTML(C('MAIL_ISHTML'));//是否是HTML字样
     $mail->Subject = $subject;// 邮件标题信息
 
