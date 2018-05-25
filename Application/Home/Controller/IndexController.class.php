@@ -33,6 +33,7 @@ class IndexController extends Controller {
             if(!preg_match("/^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/",$email)){
                 $this->ajaxReturn(array('status' => 0, 'msg' => '邮箱错误'));
             }
+            $imgUrl = $this->getGravatar($email);
             $model = M('Bloginfo');
             $url = $model->where("blog_url= '%s'",$blogurl)->order('id desc')->find();
             if(($url != null) && ($url['blog_status'] == 0)){
@@ -44,7 +45,8 @@ class IndexController extends Controller {
                     'blog_email' => htmlspecialchars($email),
                     'send_word' => htmlspecialchars($send_word),
                     'memorabilia' => htmlspecialchars($memorabilia),
-                    'create_at'=> time()
+                    'create_at' => time(),
+                    'blog_imgurl' => $imgUrl
                 );
                 $res = $model->add($data);
                 if ($res == false) {
@@ -58,7 +60,8 @@ class IndexController extends Controller {
                     'blog_email' => htmlspecialchars($email),
                     'send_word' => htmlspecialchars($send_word),
                     'memorabilia' => htmlspecialchars($memorabilia),
-                    'create_at'=> time()
+                    'create_at'=> time(),
+                    'blog_imgurl' => $imgUrl
                 );
                 $res = $model->add($data);
                 if ($res == false) {
@@ -68,6 +71,30 @@ class IndexController extends Controller {
             }
 
         }
+    }
+
+    /**
+     * 邮箱头像
+     * @param $email
+     * @param int $s
+     * @param string $d
+     * @param string $r
+     * @param bool $img
+     * @param array $atts
+     * @return string
+     */
+    public function getGravatar($email, $s = 96, $d = 'mp', $r = 'g', $img = false, $atts = array())
+    {
+        $url = 'https://www.gravatar.com/avatar/';
+        $url .= md5(strtolower(trim($email)));
+        $url .= "?s=$s&d=$d&r=$r";
+        if ($img) {
+            $url = '<img src="' . $url . '"';
+            foreach ($atts as $key => $val)
+                $url .= ' ' . $key . '="' . $val . '"';
+            $url .= ' />';
+        }
+        return $url;
     }
 
     //生成验证码
