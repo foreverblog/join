@@ -33,7 +33,7 @@ class IndexController extends Controller {
             if(!preg_match("/^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/",$email)){
                 $this->ajaxReturn(array('status' => 0, 'msg' => '邮箱错误'));
             }
-            $imgUrl = $this->getGravatar($email);
+            $imgUrl = getGravatar($email);
             $model = M('Bloginfo');
             $url = $model->where("blog_url= '%s'",$blogurl)->order('id desc')->find();
             if(($url != null) && ($url['blog_status'] == 0)){
