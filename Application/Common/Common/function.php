@@ -49,9 +49,29 @@ function checkToken($token) {
     }
 }
 
-/* 加密TOKEN */
+//加密TOKEN
 function authcode($str) {
     $key = "ANDIAMON";
     $str = substr(md5($str), 8, 10);
     return md5($key . $str);
+}
+
+//获取Gravatar头像 QQ邮箱取用qq头像
+function getGravatar($email, $s = 96, $d = 'mp', $r = 'g', $img = false, $atts = array())
+{
+    preg_match_all('/((\d)*)@qq.com/', $email, $vai);
+    if (empty($vai['1']['0'])) {
+        $url = 'https://www.gravatar.com/avatar/';
+        $url .= md5(strtolower(trim($email)));
+        $url .= "?s=$s&d=$d&r=$r";
+        if ($img) {
+            $url = '<img src="' . $url . '"';
+            foreach ($atts as $key => $val)
+                $url .= ' ' . $key . '="' . $val . '"';
+            $url .= ' />';
+        }
+    }else{
+        $url = 'https://q2.qlogo.cn/headimg_dl?dst_uin='.$vai['1']['0'].'&spec=100';
+    }
+    return  $url;
 }
