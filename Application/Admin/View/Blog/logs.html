@@ -1,10 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
+
+<include file="Public:header" />
+<!--/_header 作为公共模版分离出去-->
+<include file="Public:menu" />
+
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 博客管理 <span class="c-gray en">&gt;</span> 审核记录 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="mt-20">
+                <table class="table table-border table-bordered table-hover table-bg table-sort">
+                    <thead>
+                    <tr class="text-c">
+                        <th width="3%"><input type="checkbox" name="" value=""></th>
+                        <th width="5%">ID</th>
+                        <th width="5%">操作人</th>
+                        <th width="10%">操作时间</th>
+                        <th width="8%">IP</th>
+                        <th width="10%">博客名</th>
+                        <th width="15%">博客地址</th>
+                        <th width="20%">审核原因</th>
+                        <th width="*">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <volist name="data" id="vo">
+                    <tr class="text-c">
+                        <td><input type="checkbox" value="1" name=""></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.nickname}</td>
+                        <td>{$vo.create_at|date="Y-m-d H:i:s",###}</td>
+                        <td>{$vo.user_ip}</td>
+                        <td>{$vo.blog_name}</td>
+                        <td>{$vo.blog_url}</td>
+                        <td class="text-l">{$vo.reason}</td>
+                        <td class="f-14">
+                            <if condition="$Think.session.admin.level eq 2">暂无可用操作
+                                <else />
+                                <a title="删除" href="{:U('dellogs','id='.$vo['id'])}"  class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                            </if>
+                        </td>
+                    </tr>
+                    </volist>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+
+</section>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui.admin/js/H-ui.admin.page.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+    $('.table-sort').dataTable({
+        "aaSorting": [[ 1, "desc" ]],//默认第几个排序
+        "bStateSave": true,//状态保存
+        "aoColumnDefs": [
+            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+            {"orderable":false,"aTargets":[0,8]}// 制定列不参与排序
+        ]
+    });
+</script>
+
+<!--/请在上方写此页面业务相关的脚本-->
 </body>
 </html>

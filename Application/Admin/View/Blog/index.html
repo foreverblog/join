@@ -2,6 +2,48 @@
 <include file="Public:header" />
 <!--/_header 作为公共模版分离出去-->
 <include file="Public:menu" />
+<style>
+
+
+    #imgform {
+        width: 300px;
+        background-color: #fff;
+
+        position: absolute;
+        display: none;
+        left: 45%;
+        z-index: 1002;
+    }
+
+    #imgform .btn{
+        padding:5px;
+        font-size:14px;
+        padding-left:7px;
+
+    }
+    .close1 {
+        width: 300px;
+        height: 26px;
+        background-color: #5a98de;
+    }
+
+    #closebt {
+        float: right;
+        display:block;
+        width:20px;
+        height:25px;
+
+    }
+    .colse_form{
+        text-align: center;
+    }
+    .close2{
+        text-align: center;
+        padding-top:15px;
+    }
+
+
+</style>
 
 <section class="Hui-article-box">
     <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 博客管理 <span class="c-gray en">&gt;</span> 申请列表<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
@@ -59,7 +101,7 @@
                                     </if>
                                 <else />
                                 <a style="text-decoration:none"  href="{:U('adopt','id='.$vo['id'])}" title="通过申请"><i class="Hui-iconfont">&#xe6a7;</i>通过申请</a>&nbsp;
-                                <a style="text-decoration:none"  href="{:U('refuse','id='.$vo['id'])}" title="拒绝申请"><i class="Hui-iconfont">&#xe6a6;</i>拒绝申请</a>
+                                <a style="text-decoration:none" class="add_img" data-id="{$vo.id}" title="拒绝申请"><i class="Hui-iconfont">&#xe6a6;</i>拒绝申请</a>
                             </if>
                         </td>
                     </tr>
@@ -70,6 +112,18 @@
             </div>
         </article>
     </div>
+    <div  id="imgform">
+        <div class="close1"><span href="javascript:void(0)" id="closebt">X</span></div>
+        <div class="close2">
+            <form class="colse_form"  action="{:U('logs')}" method="post">
+                <p>请输入驳回原因</p>
+                <input type="hidden" name="id" value="">
+                <input type="text" style="margin-bottom:20px;" name="reason" required></br>
+                <input type="submit" class="btn" >
+            </form>
+        </div>
+
+    </div>
 </section>
 
 <!--_footer 作为公共模版分离出去-->
@@ -78,7 +132,7 @@
 <script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui/js/H-ui.js"></script>
 <script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui.admin/js/H-ui.admin.page.js"></script>
 <!--/_footer /作为公共模版分离出去-->
-
+<input type="text">
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="__PUBLIC_ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 <script type="text/javascript" src="__PUBLIC_ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
@@ -94,6 +148,68 @@
             ]
         });
     });
+
+
+    $(function() {
+        $('.add_img').click(function() {
+            id = $(this).data('id')
+            $('#imgform [name=id]').val(id)
+            $('#imgform').center();
+            $('#goodcover').show();
+            $('#imgform').fadeIn();
+        });
+        $('#closebt').click(function() {
+            $('#imgform').hide();
+            $('#goodcover').hide();
+        });
+
+
+
+        jQuery.fn.center = function(loaded) {
+            var obj = this;
+            body_width = parseInt($(window).width());
+            body_height = parseInt($(window).height());
+            block_width = parseInt(obj.width());
+            block_height = parseInt(obj.height());
+
+            left_position = parseInt((body_width / 2) - (block_width / 2) + $(window).scrollLeft());
+            if (body_width < block_width) {
+                left_position = 0 + $(window).scrollLeft();
+            };
+
+            top_position = parseInt((body_height / 2) - (block_height / 2) + $(window).scrollTop());
+            if (body_height < block_height) {
+                top_position = 0 + $(window).scrollTop();
+            };
+
+            if (!loaded) {
+
+                obj.css({
+                    'position': 'absolute'
+                });
+                obj.css({
+                    'top': ($(window).height() - $('#imgform').height()) * 0.5,
+                    'left': left_position
+                });
+                $(window).bind('resize', function() {
+                    obj.center(!loaded);
+                });
+                $(window).bind('scroll', function() {
+                    obj.center(!loaded);
+                });
+
+            } else {
+                obj.stop();
+                obj.css({
+                    'position': 'absolute'
+                });
+                obj.animate({
+                    'top': top_position
+                }, 200, 'linear');
+            }
+        }
+
+    })
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
 </body>
