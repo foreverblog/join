@@ -16,7 +16,7 @@ return array(
     'DB_HOST'               =>  '127.0.0.1', // 服务器地址
     'DB_NAME'               =>  'foreverblog',          // 数据库名
     'DB_USER'               =>  'root',      // 用户名
-    'DB_PWD'                =>  'root',          // 密码
+    'DB_PWD'                =>  'sy5487',          // 密码
     'DB_PORT'               =>  '3306',        // 端口
     'DB_PREFIX'             =>  'sy_',    // 数据库表前缀
 
@@ -25,7 +25,7 @@ return array(
     'MAIL_HOST'                     =>'smtp.exmail.qq.com',//邮件发送SMTP服务器
     'MAIL_SMTPAUTH'                 =>TRUE,
     'MAIL_USERNAME'                 =>'notice@foreverblog.cn',//SMTP服务器登陆用户名
-    'MAIL_PASSWORD'                 =>'',//SMTP服务器登陆密码
+    'MAIL_PASSWORD'                 =>'shenyan5487.',//SMTP服务器登陆密码
     'MAIL_SECURE'                   =>'ssl', //tls 端口25 ssl465
     'MAIL_PORT'                     =>'465', //tls 端口25 ssl465
     'MAIL_CHARSET'                  =>'utf-8',
