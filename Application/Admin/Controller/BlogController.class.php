@@ -11,7 +11,51 @@ class BlogController extends CommonController
     }
 
     /**
-     * 通过审核
+     * 失败并写日志记录
+     */
+    public function logs()
+    {
+        if(IS_POST){
+            $id = I('post.id');
+            $reason = I('post.reason');
+            $data = [
+                'blog_status' => 9,
+                'update_at' => time()
+            ];
+            //启动事务
+            M()->startTrans();
+                $res = M('Bloginfo')->where('id='.$id)->setField($data);
+                $info = [
+                    'reason' => $reason,
+                    'blog_id' => $id,
+                    'user_id' => session('admin.id'),
+                    'create_at' => time(),
+                    'user_ip' => getClientIp()
+                ];
+                $res && M('Logs')->add($info);
+            if($res){
+                //事务提交
+                M()->commit();
+                $this->success('驳回申请成功',U('index'));
+            }else{
+                //事务回滚
+                M()->rollback();
+                $this->success('驳回申请失败',U('index'));
+            }
+        }else{
+            $data = M('Logs')
+                ->alias('l')
+                ->field('l.*,b.blog_name,b.blog_url,a.nickname')
+                ->join('LEFT JOIN __ADMIN__ AS a ON l.user_id = a.id')
+                ->join('LEFT JOIN __BLOGINFO__ AS b ON l.blog_id = b.id')
+                ->select();
+            $this->assign('data',$data);
+            $this->display();
+        }
+    }
+
+    /**
+     * 通过审核 写日志
      */
     public function adopt($id)
     {
@@ -19,30 +63,28 @@ class BlogController extends CommonController
             'blog_status' => 1,
             'update_at' => time()
         );
+        //启动事务
+        M()->startTrans();
         $res = M('Bloginfo')->where('id='.$id)->setField($data);
+        $info = [
+            'reason' => '审核通过',
+            'blog_id' => $id,
+            'user_id' => session('admin.id'),
+            'create_at' => time(),
+            'user_ip' => getClientIp()
+        ];
+        $res && M('Logs')->add($info);
         if($res){
+            //事务提交
+            M()->commit();
             $this->success('审核成功');
         }else{
+            //事务回滚
+            M()->rollback();
             $this->error('审核失败');
         }
     }
 
-    /**
-     * 拒绝审核
-     */
-    public function refuse($id)
-    {
-        $data = array(
-            'blog_status' => 9,
-            'update_at' => time()
-        );
-        $res = M('Bloginfo')->where('id='.$id)->setField($data);
-        if($res){
-            $this->success('审核成功');
-        }else{
-            $this->error('审核失败');
-        }
-    }
 
     /**
      * 发送邮件
@@ -108,5 +150,17 @@ class BlogController extends CommonController
         }
     }
 
-
+    /**
+     * 删除记录
+     * @param $id
+     */
+    public function dellogs($id)
+    {
+        $res = M('Logs')->delete($id);
+        if($res){
+            $this->success('删除成功');
+        }else{
+            $this->error('删除失败');
+        }
+    }
 }
