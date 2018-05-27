@@ -118,6 +118,6 @@ class IndexController extends Controller {
      */
     public function errorfully()
     {
-        Header('Location:https://foreverblog.cn/');
+        Header('Location:http://www.foreverblog.cn/');
     }
 }
