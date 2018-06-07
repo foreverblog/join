@@ -3,6 +3,9 @@ namespace Admin\Controller;
 
 class BlogController extends CommonController
 {
+    /**
+     * 全部展示
+     */
     public function index()
     {
         $data = M('Bloginfo')->select();
@@ -10,6 +13,35 @@ class BlogController extends CommonController
         $this->display();
     }
 
+    /**
+     * 驳回的
+     */
+    public function erruser()
+    {
+        $data = M('Bloginfo')->where('blog_status = 9')->select();
+        $this->assign('data',$data);
+        $this->display();
+    }
+
+    /**
+     * 通过的
+     */
+    public function succuser()
+    {
+        $data = M('Bloginfo')->where('blog_status = 1')->select();
+        $this->assign('data',$data);
+        $this->display();
+    }
+
+    /**
+     * 等待的
+     */
+    public function waiting()
+    {
+        $data = M('Bloginfo')->where('blog_status = 0')->select();
+        $this->assign('data',$data);
+        $this->display();
+    }
     /**
      * 通过审核
      */
