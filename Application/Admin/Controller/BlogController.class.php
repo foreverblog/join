@@ -69,11 +69,11 @@ class BlogController extends CommonController
             if($res){
                 //事务提交
                 M()->commit();
-                $this->success('驳回申请成功',U('index'));
+                $this->success('驳回申请成功');
             }else{
                 //事务回滚
                 M()->rollback();
-                $this->success('驳回申请失败',U('index'));
+                $this->success('驳回申请失败');
             }
         }else{
             $data = M('Logs')
