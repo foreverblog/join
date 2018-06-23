@@ -1,10 +1,215 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
+
+<include file="Public:header" />
+<!--/_header 作为公共模版分离出去-->
+<include file="Public:menu" />
+<style>
+
+
+    #imgform {
+        width: 300px;
+        background-color: #fff;
+
+        position: absolute;
+        display: none;
+        left: 45%;
+        z-index: 1002;
+    }
+
+    #imgform .btn{
+        padding:5px;
+        font-size:14px;
+        padding-left:7px;
+
+    }
+    .close1 {
+        width: 300px;
+        height: 26px;
+        background-color: #5a98de;
+    }
+
+    #closebt {
+        float: right;
+        display:block;
+        width:20px;
+        height:25px;
+
+    }
+    .colse_form{
+        text-align: center;
+    }
+    .close2{
+        text-align: center;
+        padding-top:15px;
+    }
+
+
+</style>
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 博客管理 <span class="c-gray en">&gt;</span> 申请列表<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="mt-20">
+                <table class="table table-border table-bordered table-hover table-bg table-sort">
+                    <thead>
+                    <tr class="text-c">
+                        <th width="3%"><input type="checkbox" name="" value=""></th>
+                        <th width="3%">ID</th>
+                        <th width="5%">博客名称</th>
+                        <th width="10%">博客链接</th>
+                        <th width="10%">博主邮箱</th>
+                        <th width="8%">博主头像</th>
+                        <th width="15%">博主寄语</th>
+                        <th width="15%">大事记</th>
+                        <th width="10%">申请时间</th>
+                        <th width="6%">状态</th>
+                        <th width="6%">邮件状态</th>
+                        <th width="*">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <volist name="data" id="vo">
+                        <tr class="text-c">
+                            <td><input type="checkbox" value="1" name=""></td>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.blog_name}</td>
+                            <td><a href="{$vo.blog_url}" target="_blank" >{$vo.blog_url}</a></td>
+                            <td>{$vo.blog_email}</td>
+                            <td>{$vo.blog_imgurl}</td>
+                            <td class="text-l">{$vo.send_word}</td>
+                            <td class="text-l">{$vo.memorabilia}</td>
+                            <td>{$vo.create_at|date="Y-m-d H:i:s",###}</td>
+                            <td class="td-status">
+                                <if condition="$vo.blog_status eq 9 "><span class="label label-defaunt radius" style="background-color: red;">未通过</span>
+                                    <elseif condition="$vo.blog_status eq 1 "/><span class="label label-success radius" >已通过</span>
+                                    <else /><span class="label label-defaunt radius" >未审核</span>
+                                </if>
+                            </td>
+                            <td>
+                                <if condition="$vo.is_mail eq 1 "><span class="label label-defaunt radius" style="background-color: red;">已发送</span>
+                                    <else /><span class="label label-defaunt radius" >未发送</span>
+                                </if>
+                            </td>
+                            <td class="td-manage">
+                                <if condition="$vo.blog_status eq 1 ">
+                                    <if condition="$vo.is_mail eq 1 "> 已通知博主
+                                        <else /><a style="text-decoration:none"  href="{:U('send','id='.$vo['id'])}" title="发送邮件"><i class="Hui-iconfont">&#xe6a7;</i>发送邮件</a>
+                                    </if>
+                                    <elseif condition="$vo.blog_status eq 9"/>
+                                    <if condition="$vo.is_mail eq 1 "> 已通知博主
+                                        <else /><a style="text-decoration:none"  href="{:U('send','id='.$vo['id'])}" title="发送邮件"><i class="Hui-iconfont">&#xe6a7;</i>发送邮件</a>
+                                    </if>
+                                    <else />
+                                    <a style="text-decoration:none"  href="{:U('adopt','id='.$vo['id'])}" title="通过申请"><i class="Hui-iconfont">&#xe6a7;</i>通过申请</a>&nbsp;
+                                    <a style="text-decoration:none" class="add_img" data-id="{$vo.id}" title="拒绝申请"><i class="Hui-iconfont">&#xe6a6;</i>拒绝申请</a>
+                                </if>
+                            </td>
+                        </tr>
+                    </volist>
+                    </tbody>
+
+                </table>
+            </div>
+        </article>
+    </div>
+    <div  id="imgform">
+        <div class="close1"><span href="javascript:void(0)" id="closebt">X</span></div>
+        <div class="close2">
+            <form class="colse_form"  action="{:U('logs')}" method="post">
+                <p>请输入驳回原因</p>
+                <input type="hidden" name="id" value="">
+                <input type="text" style="margin-bottom:20px;" name="reason" required></br>
+                <input type="submit" class="btn" >
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui.admin/js/H-ui.admin.page.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.table-sort').dataTable({
+            "aaSorting": [[ 1, "asc" ]],//默认第几个排序
+            "bStateSave": true,//状态保存
+            "aoColumnDefs": [
+                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                {"orderable":false,"aTargets":[0,10]}// 制定列不参与排序
+            ]
+        });
+    });
+
+
+    $(function() {
+        $('.add_img').click(function() {
+            id = $(this).data('id')
+            $('#imgform [name=id]').val(id)
+            $('#imgform').center();
+            $('#goodcover').show();
+            $('#imgform').fadeIn();
+        });
+        $('#closebt').click(function() {
+            $('#imgform').hide();
+            $('#goodcover').hide();
+        });
+
+
+
+        jQuery.fn.center = function(loaded) {
+            var obj = this;
+            body_width = parseInt($(window).width());
+            body_height = parseInt($(window).height());
+            block_width = parseInt(obj.width());
+            block_height = parseInt(obj.height());
+
+            left_position = parseInt((body_width / 2) - (block_width / 2) + $(window).scrollLeft());
+            if (body_width < block_width) {
+                left_position = 0 + $(window).scrollLeft();
+            };
+
+            top_position = parseInt((body_height / 2) - (block_height / 2) + $(window).scrollTop());
+            if (body_height < block_height) {
+                top_position = 0 + $(window).scrollTop();
+            };
+
+            if (!loaded) {
+
+                obj.css({
+                    'position': 'absolute'
+                });
+                obj.css({
+                    'top': ($(window).height() - $('#imgform').height()) * 0.5,
+                    'left': left_position
+                });
+                $(window).bind('resize', function() {
+                    obj.center(!loaded);
+                });
+                $(window).bind('scroll', function() {
+                    obj.center(!loaded);
+                });
+
+            } else {
+                obj.stop();
+                obj.css({
+                    'position': 'absolute'
+                });
+                obj.animate({
+                    'top': top_position
+                }, 200, 'linear');
+            }
+        }
+
+    })
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
 </body>
 </html>
