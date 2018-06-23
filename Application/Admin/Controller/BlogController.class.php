@@ -42,8 +42,9 @@ class BlogController extends CommonController
         $this->assign('data',$data);
         $this->display();
     }
+
     /**
-     * 通过审核
+     * 拒绝审核
      * 失败并写日志记录
      */
     public function logs()
