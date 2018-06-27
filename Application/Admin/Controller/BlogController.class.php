@@ -14,6 +14,40 @@ class BlogController extends CommonController
     }
 
     /**
+     * 图南山后悔审核的
+     */
+    public function regret($id)
+    {
+        $blogInfo = M('Bloginfo')->where('id='.$id)->find();
+        if($blogInfo['blog_status'] == 1 || $blogInfo['blog_status'] == 9){
+            $data = array(
+                'blog_status' => 0,
+                'update_at' => time()
+            );
+        }
+        //启动事务
+        M()->startTrans();
+        $res = M('Bloginfo')->where('id='.$id)->setField($data);
+        $info = array(
+            'reason' => '撤销审核',
+            'blog_id' => $id,
+            'user_id' => session('admin.id'),
+            'create_at' => time(),
+            'user_ip' => getClientIp()
+        );
+        $res && M('Logs')->add($info);
+        if($res){
+            //事务提交
+            M()->commit();
+            $this->success('审核成功');
+        }else{
+            //事务回滚
+            M()->rollback();
+            $this->error('审核失败');
+        }
+    }
+
+    /**
      * 驳回的
      */
     public function erruser()
