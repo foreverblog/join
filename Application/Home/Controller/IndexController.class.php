@@ -8,8 +8,6 @@ class IndexController extends Controller {
     public function index()
     {
         if (IS_GET) {
-            //创建token
-//            creatToken();
             $this->display();
         } else {
 //            if (!checkToken($_POST['TOKEN'])) {
@@ -34,6 +32,7 @@ class IndexController extends Controller {
                 $this->ajaxReturn(array('status' => 0, 'msg' => '邮箱错误'));
             }
             $imgUrl = getGravatar($email);
+            $ip = get_client_ip();
             $model = M('Bloginfo');
             $url = $model->where("blog_url= '%s'",$blogurl)->order('id desc')->find();
             if(($url != null) && ($url['blog_status'] == 0)){
@@ -46,7 +45,8 @@ class IndexController extends Controller {
                     'send_word' => htmlspecialchars($send_word),
                     'memorabilia' => htmlspecialchars($memorabilia),
                     'create_at' => time(),
-                    'blog_imgurl' => $imgUrl
+                    'blog_imgurl' => $imgUrl,
+                    'user_ip'=>$ip
                 );
                 $res = $model->add($data);
                 if ($res == false) {
@@ -61,7 +61,8 @@ class IndexController extends Controller {
                     'send_word' => htmlspecialchars($send_word),
                     'memorabilia' => htmlspecialchars($memorabilia),
                     'create_at'=> time(),
-                    'blog_imgurl' => $imgUrl
+                    'blog_imgurl' => $imgUrl,
+                    'user_ip'=>$ip
                 );
                 $res = $model->add($data);
                 if ($res == false) {
