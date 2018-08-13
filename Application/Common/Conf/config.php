@@ -31,4 +31,6 @@ return array(
     'MAIL_CHARSET'                  =>'utf-8',
     'MAIL_ISHTML'                   =>TRUE,
 
+    'PUSH_BEAR_KEY' => '',
+
 );
