@@ -52,6 +52,7 @@ class IndexController extends Controller {
                 if ($res == false) {
                     $this->ajaxReturn(array('status' => 0, 'msg' => '提交失败'));
                 }
+                $this->sendPushBear($blogname,$blogurl,$email);
                 $this->ajaxReturn(array('status' => 1, 'msg' => '提交成功'));
             }else{
                 $data = array(
@@ -68,6 +69,7 @@ class IndexController extends Controller {
                 if ($res == false) {
                     $this->ajaxReturn(array('status' => 0, 'msg' => '提交失败'));
                 }
+                $this->sendPushBear($blogname,$blogurl,$email);
                 $this->ajaxReturn(array('status' => 1, 'msg' => '提交成功'));
             }
 
@@ -120,5 +122,45 @@ class IndexController extends Controller {
     public function errorfully()
     {
         Header('Location:http://www.foreverblog.cn/');
+    }
+
+    /**
+     * 推送微信消息
+     */
+    public function sendPushBear($blogname,$blogurl,$email)
+    {
+        $url = 'https://pushbear.ftqq.com/sub';
+        $text = $blogname.'申请加入十年之约';
+        $desp = $blogname.'网站地址：'.$blogurl.'邮箱：'.$email;
+        $param = array(
+            'sendkey'=>C(PUSH_BEAR_KEY),
+            'text' => $text,
+            'desp' => $desp
+        );
+        //将数组拼接成url地址参数
+        $paramurl = http_build_query($param);
+        $data = self::myCurl($url,$paramurl);
+    }
+
+    public static function myCurl($url,$params=false){
+        $ch = curl_init();     // Curl 初始化
+        $timeout = 30;     // 超时时间：30s
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);      // Curl 请求有返回的值
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);     // 设置抓取超时时间
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);        // 跟踪重定向
+        curl_setopt($ch, CURLOPT_ENCODING, "");    // 设置编码
+        curl_setopt($ch, CURLOPT_REFERER, $url);   // 伪造来源网址
+        curl_setopt($ch, CURLOPT_USERAGENT, $ua);   // 伪造ua
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); // 取消gzip压缩
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if($params){
+            curl_setopt( $ch , CURLOPT_URL , $url.'?'.$params );
+        }else{
+            curl_setopt( $ch , CURLOPT_URL , $url);
+        }
+        $content = curl_exec($ch);
+        curl_close($ch);    // 结束 Curl
+        return $content;    // 函数返回内容
     }
 }
