@@ -52,7 +52,7 @@ class IndexController extends Controller {
                 if ($res == false) {
                     $this->ajaxReturn(array('status' => 0, 'msg' => '提交失败'));
                 }
-                $this->sendPushBear($blogname,$blogurl,$email);
+                $this->sendPushBear($blogname,$blogurl,$email,$ip);
                 $this->ajaxReturn(array('status' => 1, 'msg' => '提交成功'));
             }else{
                 $data = array(
@@ -69,7 +69,7 @@ class IndexController extends Controller {
                 if ($res == false) {
                     $this->ajaxReturn(array('status' => 0, 'msg' => '提交失败'));
                 }
-                $this->sendPushBear($blogname,$blogurl,$email);
+                $this->sendPushBear($blogname,$blogurl,$email,$ip);
                 $this->ajaxReturn(array('status' => 1, 'msg' => '提交成功'));
             }
 
@@ -127,11 +127,11 @@ class IndexController extends Controller {
     /**
      * 推送微信消息
      */
-    public function sendPushBear($blogname,$blogurl,$email)
+    public function sendPushBear($blogname,$blogurl,$email,$ip)
     {
         $url = 'https://pushbear.ftqq.com/sub';
         $text = $blogname.'申请加入十年之约';
-        $desp = $blogname.'网站地址：'.$blogurl.'邮箱：'.$email;
+        $desp = $blogname.'申请加入十年之约，网站地址：'.$blogurl.'，邮箱：'.$email.'，IP为：'.$ip.'请审核人员注意审核~辛苦啦';
         $param = array(
             'sendkey'=>C(PUSH_BEAR_KEY),
             'text' => $text,
@@ -150,7 +150,6 @@ class IndexController extends Controller {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);        // 跟踪重定向
         curl_setopt($ch, CURLOPT_ENCODING, "");    // 设置编码
         curl_setopt($ch, CURLOPT_REFERER, $url);   // 伪造来源网址
-        curl_setopt($ch, CURLOPT_USERAGENT, $ua);   // 伪造ua
         curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); // 取消gzip压缩
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
