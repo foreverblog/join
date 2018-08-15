@@ -131,7 +131,7 @@ class IndexController extends Controller {
     {
         $url = 'https://pushbear.ftqq.com/sub';
         $text = $blogname.'申请加入十年之约';
-        $desp = $blogname.'申请加入十年之约，网站地址：'.$blogurl.'，邮箱：'.$email.'，IP为：'.$ip.'请审核人员注意审核~辛苦啦';
+        $desp = "### 博客名称：".$blogname."\n\n### 博客链接：[".$blogurl."](".$blogurl.")"."\n\n### 博主邮箱：".$email."\n\n### 申请IP：".$ip."\n\n### 请审核人员注意审核~辛苦啦";
         $param = array(
             'sendkey'=>C(PUSH_BEAR_KEY),
             'text' => $text,
@@ -139,7 +139,7 @@ class IndexController extends Controller {
         );
         //将数组拼接成url地址参数
         $paramurl = http_build_query($param);
-        $data = self::myCurl($url,$paramurl);
+        self::myCurl($url,$paramurl);
     }
 
     public static function myCurl($url,$params=false){
