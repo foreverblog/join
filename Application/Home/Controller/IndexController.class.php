@@ -120,4 +120,18 @@ class IndexController extends Controller {
     {
         Header('Location:http://www.foreverblog.cn/');
     }
+
+    /**
+     * 防止修改http和https重复提交
+     * @param $url
+     * @return null|string|string[]
+     */
+    public static function getUrl($url)
+    {
+        if (preg_match('/(http:\/\/)|(https:\/\/)/i', $url)) {
+            // 去掉https://和http://前缀
+            $newurl = preg_replace('/(http:\/\/)|(https:\/\/)/i', '', $url);
+            return $newurl;
+        }
+    }
 }
