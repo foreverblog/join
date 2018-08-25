@@ -3,6 +3,9 @@ namespace Admin\Controller;
 
 class BlogController extends CommonController
 {
+    /**
+     * 全部展示
+     */
     public function index()
     {
         $data = M('Bloginfo')->select();
@@ -11,6 +14,71 @@ class BlogController extends CommonController
     }
 
     /**
+     * 图南山后悔审核的
+     */
+    public function regret($id)
+    {
+        $blogInfo = M('Bloginfo')->where('id='.$id)->find();
+        if($blogInfo['blog_status'] == 1 || $blogInfo['blog_status'] == 9){
+            $data = array(
+                'blog_status' => 0,
+                'update_at' => time()
+            );
+        }
+        //启动事务
+        M()->startTrans();
+        $res = M('Bloginfo')->where('id='.$id)->setField($data);
+        $info = array(
+            'reason' => '撤销审核',
+            'blog_id' => $id,
+            'user_id' => session('admin.id'),
+            'create_at' => time(),
+            'user_ip' => getClientIp()
+        );
+        $res && M('Logs')->add($info);
+        if($res){
+            //事务提交
+            M()->commit();
+            $this->success('审核成功');
+        }else{
+            //事务回滚
+            M()->rollback();
+            $this->error('审核失败');
+        }
+    }
+
+    /**
+     * 驳回的
+     */
+    public function erruser()
+    {
+        $data = M('Bloginfo')->where('blog_status = 9')->select();
+        $this->assign('data',$data);
+        $this->display();
+    }
+
+    /**
+     * 通过的
+     */
+    public function succuser()
+    {
+        $data = M('Bloginfo')->where('blog_status = 1')->select();
+        $this->assign('data',$data);
+        $this->display();
+    }
+
+    /**
+     * 等待的
+     */
+    public function waiting()
+    {
+        $data = M('Bloginfo')->where('blog_status = 0')->select();
+        $this->assign('data',$data);
+        $this->display();
+    }
+
+    /**
+     * 拒绝审核
      * 失败并写日志记录
      */
     public function logs()
@@ -36,11 +104,11 @@ class BlogController extends CommonController
             if($res){
                 //事务提交
                 M()->commit();
-                $this->success('驳回申请成功',U('index'));
+                $this->success('驳回申请成功');
             }else{
                 //事务回滚
                 M()->rollback();
-                $this->success('驳回申请失败',U('index'));
+                $this->success('驳回申请失败');
             }
         }else{
             $data = M('Logs')
@@ -98,7 +166,7 @@ class BlogController extends CommonController
             $content = '<span style="display:none;">&nbsp;</span><style id="tmpl_style_notice_tmplid"> .default_text{margin-left:2px;margin-right:2px;background-color:#f5edcd;color:#949412;cursor:pointer;}
  .default_text:hover {background-color:#f5e3a3;}
  .default_text_hover{background-color:#f5e3a3;}
-</style><div id="tmpl_module" style="background-image: url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;); background-position: 0px 0px; background-size: initial; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial;" tmpl_index_length="5" tmpl_background="url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;) 0px 0px"><div style="background-image: url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;); background-position: 0px 0px; background-size: initial; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial; font-size: 14px;" tmpl_background="url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;) 0px 0px"><div style="padding: 2em;"><div style="background-image: url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_line.png&quot;); background-position: 0px 0px; background-size: initial; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial; margin: 0px auto; padding: 0px 3em; line-height: 36px;" tmpl_background="url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_line.png&quot;) 0px 0px"><p id="test" style="background-color: initial; margin: 0px; line-height: 36px; font-size: 20px; text-align: center;">申请驳回通知</p><p style="margin: 0px; line-height: 36px;"><font color="#949412"><span style="background-color: rgb(245, 237, 205);">尊敬的 '.$data['blog_name'].'博主</span></font>：</p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;">根据<span un="tmpl_default" tmpl_index="1">根据“十年公约”，所列条款，经过项目组审核评议论,决定驳回您的申请。</span></p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;">驳回理由：您的站点目前暂不符合《十年公约》第二条中所列之内容。</p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;">随本邮件附十年公约一份，您可仔细阅读，达到申请条件后可再行申请！<br></p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;"></p><p style="background-color: initial; margin: 0px; line-height: 36px;">特此通知</p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;"></p><div style="background-color: initial; text-align: right;"><p style=" margin:0;line-height:36px;">&nbsp;<span un="tmpl_default" tmpl_index="4">十年之约项目组</span></p><p style=" margin:0;line-height:36px;" un="date_text">'.date("Y年m月d日", time()).'</p><p style=" margin:0;line-height:36px;">&nbsp;</p><p style=" margin:0;line-height:36px;">&nbsp;</p></div><p style="background-color: initial; margin: 0px; line-height: 36px;">&nbsp;</p><p style="background-color: initial; margin: 0px; line-height: 36px;">&nbsp;</p><p style="background-color: initial; margin: 0px; line-height: 36px;">&nbsp;</p></div></div></div></div>';
+</style><div id="tmpl_module" style="background-image: url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;); background-position: 0px 0px; background-size: initial; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial;" tmpl_index_length="5" tmpl_background="url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;) 0px 0px"><div style="background-image: url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;); background-position: 0px 0px; background-size: initial; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial; font-size: 14px;" tmpl_background="url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;) 0px 0px"><div style="padding: 2em;"><div style="background-image: url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_line.png&quot;); background-position: 0px 0px; background-size: initial; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial; margin: 0px auto; padding: 0px 3em; line-height: 36px;" tmpl_background="url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_line.png&quot;) 0px 0px"><p id="test" style="background-color: initial; margin: 0px; line-height: 36px; font-size: 20px; text-align: center;">申请驳回通知</p><p style="margin: 0px; line-height: 36px;"><font color="#949412"><span style="background-color: rgb(245, 237, 205);">尊敬的'.$data['blog_name'].'博主</span></font>：</p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;">根据<span un="tmpl_default" tmpl_index="1">根据“十年公约”，所列条款，经过项目组审核评议,决定驳回您的申请。</span></p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;">驳回理由：您的站点目前暂不符合《十年公约》第二条中所列之内容。</p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;">随本邮件附十年公约一份，您可仔细阅读，达到申请条件后可再行申请！<br></p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;"></p><p style="background-color: initial; margin: 0px; line-height: 36px;">特此通知</p><p style="background-color: initial; margin: 0px; line-height: 36px; text-indent: 2em;"></p><div style="background-color: initial; text-align: right;"><p style=" margin:0;line-height:36px;">&nbsp;<span un="tmpl_default" tmpl_index="4">十年之约项目组</span></p><p style=" margin:0;line-height:36px;" un="date_text">'.date("Y年m月d日", time()).'</p><p style=" margin:0;line-height:36px;">&nbsp;</p><p style=" margin:0;line-height:36px;">&nbsp;</p></div><p style="background-color: initial; margin: 0px; line-height: 36px;">&nbsp;</p><p style="background-color: initial; margin: 0px; line-height: 36px;">&nbsp;</p><p style="background-color: initial; margin: 0px; line-height: 36px;">&nbsp;</p></div></div></div></div>';
         }else{
             $subject = '【十年之约】欢迎加入十年之约！';
             $content = '<div style="background:url(\'//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png\') repeat 0 0;font-size:14px;" tmpl_background="url(&quot;//exmail.qq.com/zh_CN/htmledition/images/compose_tmpl_bg.png&quot;) 0px 0px">

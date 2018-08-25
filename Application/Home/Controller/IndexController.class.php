@@ -8,8 +8,6 @@ class IndexController extends Controller {
     public function index()
     {
         if (IS_GET) {
-            //创建token
-//            creatToken();
             $this->display();
         } else {
 //            if (!checkToken($_POST['TOKEN'])) {
@@ -34,6 +32,7 @@ class IndexController extends Controller {
                 $this->ajaxReturn(array('status' => 0, 'msg' => '邮箱错误'));
             }
             $imgUrl = getGravatar($email);
+            $ip = get_client_ip();
             $model = M('Bloginfo');
             $url = $model->where("blog_url= '%s'",$blogurl)->order('id desc')->find();
             if(($url != null) && ($url['blog_status'] == 0)){
@@ -46,12 +45,14 @@ class IndexController extends Controller {
                     'send_word' => htmlspecialchars($send_word),
                     'memorabilia' => htmlspecialchars($memorabilia),
                     'create_at' => time(),
-                    'blog_imgurl' => $imgUrl
+                    'blog_imgurl' => $imgUrl,
+                    'user_ip'=>$ip
                 );
                 $res = $model->add($data);
                 if ($res == false) {
                     $this->ajaxReturn(array('status' => 0, 'msg' => '提交失败'));
                 }
+                $this->sendPushBear($blogname,$blogurl,$email,$ip);
                 $this->ajaxReturn(array('status' => 1, 'msg' => '提交成功'));
             }else{
                 $data = array(
@@ -61,12 +62,14 @@ class IndexController extends Controller {
                     'send_word' => htmlspecialchars($send_word),
                     'memorabilia' => htmlspecialchars($memorabilia),
                     'create_at'=> time(),
-                    'blog_imgurl' => $imgUrl
+                    'blog_imgurl' => $imgUrl,
+                    'user_ip'=>$ip
                 );
                 $res = $model->add($data);
                 if ($res == false) {
                     $this->ajaxReturn(array('status' => 0, 'msg' => '提交失败'));
                 }
+                $this->sendPushBear($blogname,$blogurl,$email,$ip);
                 $this->ajaxReturn(array('status' => 1, 'msg' => '提交成功'));
             }
 
@@ -133,5 +136,44 @@ class IndexController extends Controller {
             $newurl = preg_replace('/(http:\/\/)|(https:\/\/)/i', '', $url);
             return $newurl;
         }
+    }
+
+    /**
+     * 推送微信消息
+     */
+    public function sendPushBear($blogname,$blogurl,$email,$ip)
+    {
+        $url = 'https://pushbear.ftqq.com/sub';
+        $text = $blogname.'申请加入十年之约';
+        $desp = "### 博客名称：".$blogname."\n\n### 博客链接：[".$blogurl."](".$blogurl.")"."\n\n### 博主邮箱：".$email."\n\n### 申请IP：".$ip."\n\n### 请审核人员注意审核~辛苦啦";
+        $param = array(
+            'sendkey'=>C(PUSH_BEAR_KEY),
+            'text' => $text,
+            'desp' => $desp
+        );
+        //将数组拼接成url地址参数
+        $paramurl = http_build_query($param);
+        self::myCurl($url,$paramurl);
+    }
+
+    public static function myCurl($url,$params=false){
+        $ch = curl_init();     // Curl 初始化
+        $timeout = 30;     // 超时时间：30s
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);      // Curl 请求有返回的值
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);     // 设置抓取超时时间
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);        // 跟踪重定向
+        curl_setopt($ch, CURLOPT_ENCODING, "");    // 设置编码
+        curl_setopt($ch, CURLOPT_REFERER, $url);   // 伪造来源网址
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); // 取消gzip压缩
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if($params){
+            curl_setopt( $ch , CURLOPT_URL , $url.'?'.$params );
+        }else{
+            curl_setopt( $ch , CURLOPT_URL , $url);
+        }
+        $content = curl_exec($ch);
+        curl_close($ch);    // 结束 Curl
+        return $content;    // 函数返回内容
     }
 }
