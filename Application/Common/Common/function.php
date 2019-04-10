@@ -13,7 +13,7 @@ function sendMail($to, $subject, $content)
     $mail->SMTPAuth = C('MAIL_SMTPAUTH'); //启用SMTP认证
     $mail->Username = C('MAIL_USERNAME');//邮箱名称
     $mail->Password = C('MAIL_PASSWORD');//邮箱密码
-    $mail->SMTPSecure = C('MAIL_SECURE');//发件人地址
+    $mail->SMTPSecure = C('MAIL_SECURE');
     $mail->CharSet = C('MAIL_CHARSET');//邮件头部信息
     $mail->From = C('MAIL_USERNAME');//发件人是谁
     $mail->AddAddress($to);
@@ -21,8 +21,6 @@ function sendMail($to, $subject, $content)
     $mail->AddAttachment('./Public/10years.pdf','十年公约（2018年5月24日第二次修订）.pdf'); // 添加附件,并指定名称
     $mail->IsHTML(C('MAIL_ISHTML'));//是否是HTML字样
     $mail->Subject = $subject;// 邮件标题信息
-
-
     
     $mail->Body = $content;//邮件内容
     // 发送邮件

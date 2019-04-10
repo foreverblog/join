@@ -125,20 +125,6 @@ class IndexController extends Controller {
     }
 
     /**
-     * 防止修改http和https重复提交
-     * @param $url
-     * @return null|string|string[]
-     */
-    public static function getUrl($url)
-    {
-        if (preg_match('/(http:\/\/)|(https:\/\/)/i', $url)) {
-            // 去掉https://和http://前缀
-            $newurl = preg_replace('/(http:\/\/)|(https:\/\/)/i', '', $url);
-            return $newurl;
-        }
-    }
-
-    /**
      * 推送微信消息
      */
     public function sendPushBear($blogname,$blogurl,$email,$ip)

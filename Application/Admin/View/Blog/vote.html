@@ -1,0 +1,213 @@
+
+<include file="Public:header" />
+<!--/_header 作为公共模版分离出去-->
+<include file="Public:menu" />
+<style>
+
+
+    #imgform {
+        width: 300px;
+        background-color: #fff;
+
+        position: absolute;
+        display: none;
+        left: 45%;
+        z-index: 1002;
+    }
+
+    #imgform .btn{
+        padding:5px;
+        font-size:14px;
+        padding-left:7px;
+
+    }
+    .close1 {
+        width: 300px;
+        height: 26px;
+        background-color: #5a98de;
+    }
+
+    #closebt {
+        float: right;
+        display:block;
+        width:20px;
+        height:25px;
+
+    }
+    .colse_form{
+        text-align: center;
+    }
+    .close2{
+        text-align: center;
+        padding-top:15px;
+    }
+
+
+</style>
+
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 博客管理 <span class="c-gray en">&gt;</span> 申请列表<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="mt-20">
+                <table class="table table-border table-bordered table-hover table-bg table-sort">
+                    <thead>
+                    <tr class="text-c">
+                        <th width="3%"><input type="checkbox" name="" value=""></th>
+                        <th width="3%">ID</th>
+                        <th width="8%">博客名称</th>
+                        <th width="13%">博客链接</th>
+                        <th width="12%">博主邮箱</th>
+                        <th width="10%">博主头像</th>
+                        <th width="18%">博主寄语</th>
+                        <th width="18%">大事记</th>
+                        <th width="10%">申请时间</th>
+                        <th width="*">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <volist name="data" id="vo">
+                    <tr class="text-c">
+                        <td><input type="checkbox" value="1" name=""></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.blog_name}</td>
+                        <td><a href="{$vo.blog_url}" target="_blank" >{$vo.blog_url}</a></td>
+                        <td>{$vo.blog_email}</td>
+                        <td><img src="{$vo.blog_imgurl}" alt=""></td>
+                        <td class="text-l">{$vo.send_word}</td>
+                        <td class="text-l">{$vo.memorabilia}</td>
+                        <td>{$vo.create_at|date="Y-m-d H:i:s",###}</td>
+                        <td class="td-manage">
+                            <button class="btn radius btn-primary size-L" onClick="vote({$vo.id})">开始投票</button>
+                        </td>
+                    </tr>
+                    </volist>
+                    </tbody>
+
+                </table>
+            </div>
+        </article>
+    </div>
+
+    <div id="vote" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <h3 class="modal-title">博客审核投票</h3>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="temp" value="">
+                    <center>
+                        <button class="btn btn-danger radius" style="margin-left:10px;margin-right:10px;" onclick="doVote(-1)">不符合</button>
+                        <button class="btn btn-secondary radius" style="margin-left:10px;margin-right:10px;" onclick="doVote(0)">基本符合</button>
+                        <button class="btn btn-success radius" style="margin-left:10px;margin-right:10px;" onclick="doVote(1)">符合</button>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/static/h-ui.admin/js/H-ui.admin.page.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__PUBLIC_ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+        $('.table-sort').dataTable({
+            "aaSorting": [[ 1, "asc" ]],//默认第几个排序
+            "bStateSave": true,//状态保存
+            "aoColumnDefs": [
+                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                {"orderable":false,"aTargets":[0]}// 制定列不参与排序
+            ]
+        });
+    });
+    function vote(id){
+        $("#vote").modal("show")
+        $("#temp").val(id);
+    }
+    function doVote(val){
+        //action -1 0 1
+        $.post("/admin/Blog/vote/id/" + $("#temp").val(),{'do':val},function(result){
+            alert(result);
+        });
+    }
+
+
+    $(function() {
+        $('.add_img').click(function() {
+            id = $(this).data('id')
+            $('#imgform [name=id]').val(id)
+            $('#imgform').center();
+            $('#goodcover').show();
+            $('#imgform').fadeIn();
+        });
+        $('#closebt').click(function() {
+            $('#imgform').hide();
+            $('#goodcover').hide();
+        });
+
+
+
+        jQuery.fn.center = function(loaded) {
+            var obj = this;
+            body_width = parseInt($(window).width());
+            body_height = parseInt($(window).height());
+            block_width = parseInt(obj.width());
+            block_height = parseInt(obj.height());
+
+            left_position = parseInt((body_width / 2) - (block_width / 2) + $(window).scrollLeft());
+            if (body_width < block_width) {
+                left_position = 0 + $(window).scrollLeft();
+            };
+
+            top_position = parseInt((body_height / 2) - (block_height / 2) + $(window).scrollTop());
+            if (body_height < block_height) {
+                top_position = 0 + $(window).scrollTop();
+            };
+
+            if (!loaded) {
+
+                obj.css({
+                    'position': 'absolute'
+                });
+                obj.css({
+                    'top': ($(window).height() - $('#imgform').height()) * 0.5,
+                    'left': left_position
+                });
+                $(window).bind('resize', function() {
+                    obj.center(!loaded);
+                });
+                $(window).bind('scroll', function() {
+                    obj.center(!loaded);
+                });
+
+            } else {
+                obj.stop();
+                obj.css({
+                    'position': 'absolute'
+                });
+                obj.animate({
+                    'top': top_position
+                }, 200, 'linear');
+            }
+        }
+
+    })
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

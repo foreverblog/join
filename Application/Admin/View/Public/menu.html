@@ -1,19 +1,35 @@
 <aside class="Hui-aside">
 
     <div class="menu_dropdown bk_2">
-        <dl id="menu-article">
-            <dt><i class="Hui-iconfont">&#xe616;</i> 博客管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-            <dd>
-                <ul>
-                    <li><a href="{:U('Blog/index')}" title="申请列表">申请列表</a></li>
-                    <li><a href="{:U('Blog/waiting')}" title="等待审核">等待审核</a></li>
-                    <li><a href="{:U('Blog/succuser')}" title="审核通过">审核通过</a></li>
-                    <li><a href="{:U('Blog/erruser')}" title="驳回申请">驳回申请</a></li>
-                    <li><a href="{:U('Blog/logs')}" title="审核记录">审核记录</a></li>
-                </ul>
-            </dd>
-        </dl>
         <if condition="$Think.session.admin.level eq 2">
+            <else />
+            <dl id="menu-article">
+                <dt><i class="Hui-iconfont">&#xe616;</i> 博客管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="{:U('Blog/index')}" title="申请列表">申请列表</a></li>
+                        <li><a href="{:U('Blog/waiting')}" title="等待审核">等待审核</a></li>
+                        <li><a href="{:U('Blog/succuser')}" title="审核通过">审核通过</a></li>
+                        <li><a href="{:U('Blog/erruser')}" title="驳回申请">驳回申请</a></li>
+                        <li><a href="{:U('Blog/logs')}" title="审核记录">审核记录</a></li>
+                        <li><a href="{:U('Blog/examine')}" title="投票审核">投票审核</a></li>
+                        <li><a href="{:U('Blog/votelog')}" title="投票日志">投票日志</a></li>
+                    </ul>
+                </dd>
+            </dl>
+        </if>
+
+        <if condition="$Think.session.admin.level eq 2">
+            <dl id="menu-admin">
+                <dt><i class="Hui-iconfont">&#xe62d;</i> 投票管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="{:U('blog/vote')}" title="投票">投票</a></li>
+                        <li><a href="{:U('blog/votelog')}" title="投票日志">投票日志</a></li>
+                    </ul>
+                </dd>
+            </dl>
+
             <else />
             <dl id="menu-admin">
                 <dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
@@ -24,6 +40,7 @@
                 </dd>
             </dl>
         </if>
+
     </div>
 </aside>
 <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>

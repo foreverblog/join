@@ -231,4 +231,63 @@ class BlogController extends CommonController
             $this->error('删除失败');
         }
     }
+
+    /**
+     * 投票
+     * @author 5ibug
+     * @param $id
+     * @version 1.0
+     */
+    public function votelog($data = null)
+    {
+        if($data){
+            M('votelog')->add($data);
+        }else{
+            $data = M('votelog')
+                ->alias('l')
+                ->field('l.*,b.blog_name,b.blog_url,a.nickname')
+                ->join('LEFT JOIN __ADMIN__ AS a ON l.user_id = a.id')
+                ->join('LEFT JOIN __BLOGINFO__ AS b ON l.blog_id = b.id')
+                ->select();
+            $this->assign('data',$data);
+            $this->display();
+        }
+    }
+    /*管理审核用*/
+    public function examine(){
+        $data = M('Bloginfo')->query("SELECT * FROM sy_bloginfo,sy_votelog WHERE sy_votelog.blog_id = sy_bloginfo.id and sy_bloginfo.blog_status = 0");
+        $this->assign('data',$data);
+        $this->display();
+    }
+
+
+    public function vote($id = null){
+        if(empty($id)){
+            $data = M('Bloginfo')->where(array('blog_status'=>'0'))->select();
+
+            $this->assign('data',$data);
+            $this->display();
+        }else{
+            if(sizeof(M('votelog')->where(array('user_id'=>session('admin.id'),"blog_id"=>$id))->select()) > 0){
+                die('重复投票');
+            }
+            $data = M('Bloginfo')->where(array('id'=>$id))->find();
+            $data2 = M('Bloginfo');
+            $data2 -> vote = $data['vote'] + 1;
+            $data2->where(array('id'=>$id))->save();
+            /*记录日志*/
+            $log = array(
+                'blog_id' => $id,
+                'user_id' => session('admin.id'),
+                'create_at' => time(),
+                'user_ip' => getClientIp(),
+            );
+            $this->votelog($log);
+
+            if ($data2){
+                echo '投票成功';
+            }
+            /*记录日志end*/
+        }
+    }
 }
