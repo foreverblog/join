@@ -13,7 +13,7 @@
     <div class="Hui-article">
         <article class="cl pd-20">
             <div class="cl pd-5 bg-1 bk-gray mt-20">
-                <if condition="$Think.session.admin.id eq 1"> <span class="l"><a href="javascript:;" onclick="admin_add('添加管理员','{:U('add')}','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a> </span>
+                <if condition="$Think.session.admin.level lt 2"> <span class="l"><a href="javascript:;" onclick="admin_add('添加管理员','{:U('add')}','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a> </span>
                     <else />
                 </if>
 
@@ -51,14 +51,8 @@
                     </td>
                     <td>{$vo.create_at|date="Y-m-d H:i:s",###}</td>
                     <td class="td-manage">
-                        <if condition="$vo.id eq 1">
-                            <else/>
                             <a title="编辑" href="javascript:;" onclick="admin_edit('修改','{:U('edit','id='.$vo['id'])}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-                        </if>
-                        <if condition="$vo.id eq 1">
-                            <else />
                             <a title="删除" href="{:U('del')}?id={$vo.id}" onclick="return confirm('确定删除吗？');" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-                        </if>
                     </td>
                 </tr>
                 </volist>
