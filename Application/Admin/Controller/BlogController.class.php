@@ -255,7 +255,7 @@ class BlogController extends CommonController
     }
     /*管理审核用*/
     public function examine(){
-        $data = M('Bloginfo')->query("SELECT * FROM sy_bloginfo,sy_votelog WHERE sy_votelog.blog_id = sy_bloginfo.id and sy_bloginfo.blog_status = 0");
+        $data = M('Bloginfo')->query("SELECT * FROM fb_bloginfo,fb_votelog WHERE fb_votelog.blog_id = fb_bloginfo.id and fb_bloginfo.blog_status = 0");
         $this->assign('data',$data);
         $this->display();
     }
